@@ -12,7 +12,8 @@ def to_dialog(srt: list[str]) -> list[str]:
     Args:
        srt: A list of lines from an SRT file. The SRT file is expected to
            follow the schema assumed by ``srttool`` .
-    Returns: A list of subtitle text less metadata. Blocks of text in the SRT
+    Returns:
+        A list of subtitle text less metadata. Blocks of text in the SRT
         content containing newlines are combined into a single string, but the
         newline characters are preserved.
     """
