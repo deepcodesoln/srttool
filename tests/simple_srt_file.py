@@ -7,7 +7,7 @@ SIMPLE_SRT_CONTENT = [
     "\n",
     "2\n",
     "00:01:07,20 --> 00:01:10,20\n",
-    "baz bar\n",
+    "{\\an8}baz bar\n",
     "foo\n",
     "\n",
 ]

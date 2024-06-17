@@ -3,6 +3,7 @@ Utilities to convert an SRT file to subtitle text without metadata.
 """
 
 import argparse
+import re
 
 from libsrttool import srt_parser
 
@@ -29,7 +30,8 @@ def extend_cli(sp: argparse._SubParsersAction):
 
 def to_dialog(srt: list[str]) -> list[str]:
     """
-    Convert SRT content to a subtitle text without metadata.
+    Convert SRT content to a subtitle text without metadata. Special SRT
+    formatting such as subtitle position is removed from text.
 
     Args:
        srt: A list of lines from an SRT file. The SRT file is expected to
@@ -39,9 +41,11 @@ def to_dialog(srt: list[str]) -> list[str]:
         content containing newlines are combined into a single string, but the
         newline characters are preserved.
     """
+    subtitle_position = re.compile("{\\\\an.}")
     text: list[str] = []
     for e in srt_parser.parse_srt(srt):
-        text.append(e.text)
+        cleaned_text = re.sub(subtitle_position, "", e.text)
+        text.append(cleaned_text)
     return text
 
 
@@ -51,6 +55,5 @@ def main(args: argparse.Namespace):
     lines = to_dialog(lines)
     with open(args.output_file, "w") as f:
         for l in lines:
-            # Write an extra newline per line to preserve SRT-like format.
-            f.write(l + "\n")
+            f.write(l)
         f.close()

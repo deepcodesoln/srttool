@@ -12,4 +12,4 @@ class TestLibSRTToolSRTParser(unittest.TestCase):
         self.assertTrue(es[0].text == "foo bar baz\n")
 
         self.assertTrue(es[1].num == 2)
-        self.assertTrue(es[1].text == "baz bar\nfoo\n")
+        self.assertTrue(es[1].text == "{\\an8}baz bar\nfoo\n")
