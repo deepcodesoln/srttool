@@ -22,27 +22,14 @@ def cli() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
     )
-    parser.add_argument("srt", help="pathname of SRT file to process")
-    parser.add_argument(
-        "--to-dialog",
-        metavar="output_file",
-        help="convert an SRT file to a text file containing only subtitle text; argument is output filename",
-    )
+    subparsers = parser.add_subparsers(help="actions")
+    to_dialog.extend_cli(subparsers)
     return parser.parse_args()
 
 
 def main():
     args = cli()
-
-    if args.to_dialog:
-        with open(args.srt, "r") as f:
-            lines = f.readlines()
-        lines = to_dialog.to_dialog(lines)
-        with open(args.to_dialog, "w") as f:
-            for l in lines:
-                # Write an extra newline per line to preserve SRT-like format.
-                f.write(l + "\n")
-            f.close()
+    args.func(args)
 
 
 if __name__ == "__main__":
