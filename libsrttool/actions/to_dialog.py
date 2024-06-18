@@ -3,6 +3,8 @@ Utilities to convert an SRT file to subtitle text without metadata.
 """
 
 import argparse
+import glob
+import os
 import re
 
 from libsrttool import srt_parser
@@ -18,9 +20,12 @@ def extend_cli(sp: argparse._SubParsersAction):
     """
     parser = sp.add_parser(
         "to_dialog",
-        help="convert an SRT file to a text file containing only subtitle text",
+        help="convert one or more SRT files to a text file containing only subtitle text",
     )
-    parser.add_argument("srt_file", help="pathname of SRT file to process")
+    parser.add_argument(
+        "srt_file",
+        help="pathname of SRT file or directory to process",
+    )
     parser.add_argument(
         "output_file",
         help="the pathname to write the dialog file to",
@@ -50,10 +55,16 @@ def to_dialog(srt: list[str]) -> list[str]:
 
 
 def main(args: argparse.Namespace):
-    with open(args.srt_file, "r") as f:
-        lines = f.readlines()
-    lines = to_dialog(lines)
+    if os.path.isdir(args.srt_file):
+        files = glob.glob(os.path.join(args.srt_file, "*.srt"))
+    else:
+        files = [args.srt_file]
+
+    lines = []
+    for srt_file in files:
+        with open(srt_file, "r") as f:
+            ls = f.readlines()
+            lines.extend(to_dialog(ls))
     with open(args.output_file, "w") as f:
         for l in lines:
             f.write(l)
-        f.close()
