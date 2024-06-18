@@ -10,8 +10,8 @@ https://spacy.io/api/data-formats#json-input
 
 import argparse
 import json
-from collections import defaultdict
-from typing import DefaultDict, NamedTuple
+
+from libsrttool import ginza_spacy_parser
 
 
 def extend_cli(sp: argparse._SubParsersAction):
@@ -32,51 +32,16 @@ def extend_cli(sp: argparse._SubParsersAction):
     )
     parser.add_argument(
         "output_file",
-        help="the pathname to write the word frequency list to",
+        help="the pathname to write the word frequency list to; "
+        + "each line has the form `lemma (norm), count`",
     )
     parser.set_defaults(func=main)
-
-
-DESIRED_PARTS_OF_SPEECH = ["PROPN", "VERB", "PRON"]
-WHITESPACE = "空白"
-
-
-class Word(NamedTuple):
-    """ """
-
-    lemma: str
-    norm: str
-
-    def __hash__(self):
-        return hash(self.lemma + self.norm)
-
-    def __str__(self):
-        return f"{self.norm} ({self.lemma})"
-
-
-def word_frequency(json_content) -> list[tuple[Word, int]]:
-    """ """
-    words: DefaultDict[Word, int] = defaultdict(int)
-    for block in json_content:
-        for paragraph in block["paragraphs"]:
-            for sentence in paragraph["sentences"]:
-                for token in sentence["tokens"]:
-                    if token["pos"] not in DESIRED_PARTS_OF_SPEECH:
-                        continue
-                    if token["tag"] == WHITESPACE:
-                        continue
-                    words[Word(token["lemma"], token["norm"])] += 1
-    sorted_words = sorted(words.items(), key=lambda x: x[1], reverse=True)
-    return sorted_words
 
 
 def main(args: argparse.Namespace):
     with open(args.json_file, "r") as f:
         json_content = json.load(f)
-    words = word_frequency(json_content)
-    for word, count in words:
-        print(f"{word}, {count}")
-    # with open(args.output_file, "w") as f:
-    #     for l in lines:
-    #         # Write an extra newline per line to preserve SRT-like format.
-    #         f.write(l + "\n")
+    words = ginza_spacy_parser.spacy_to_word_frequencies(json_content)
+    with open(args.output_file, "w") as f:
+        for word, count in words:
+            f.write(f"{word}, {count}\n")
