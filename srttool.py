@@ -16,7 +16,7 @@ import argparse
 import sys
 
 from libsrttool import srt_parser
-from libsrttool.actions import to_dialog, word_frequency
+from libsrttool.actions import ginza_wrapper, to_dialog, word_frequency
 
 
 def cli() -> argparse.Namespace:
@@ -25,6 +25,7 @@ def cli() -> argparse.Namespace:
     )
     subparsers = parser.add_subparsers(help="actions")
     to_dialog.extend_cli(subparsers)
+    ginza_wrapper.extend_cli(subparsers)
     word_frequency.extend_cli(subparsers)
     return parser.parse_args()
 
