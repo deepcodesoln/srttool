@@ -98,6 +98,6 @@ def main(args: argparse.Namespace) -> int:
             some_json = json.loads(ginza_json)
             json.dump(some_json, json_file)
 
-        print(f"({i}) {f}: done")
+        print(f"({i + 1}) {f}: done")
 
     return 0
