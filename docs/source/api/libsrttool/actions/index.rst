@@ -4,5 +4,4 @@ Actions
 to_dialog
 ---------
 
-.. automodule:: libsrttool.actions.to_dialog
-   :members:
+.. autofunction:: libsrttool.actions.to_dialog.to_dialog
