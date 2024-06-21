@@ -13,6 +13,7 @@ text (string, no enclosing quotes; ex: nani nani nani)
 """
 
 import argparse
+import sys
 
 from libsrttool import srt_parser
 from libsrttool.actions import to_dialog, word_frequency
@@ -30,8 +31,8 @@ def cli() -> argparse.Namespace:
 
 def main():
     args = cli()
-    args.func(args)
+    return args.func(args)
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

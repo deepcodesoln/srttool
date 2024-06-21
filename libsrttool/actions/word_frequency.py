@@ -38,10 +38,12 @@ def extend_cli(sp: argparse._SubParsersAction):
     parser.set_defaults(func=main)
 
 
-def main(args: argparse.Namespace):
+def main(args: argparse.Namespace) -> int:
     with open(args.json_file, "r") as f:
         json_content = json.load(f)
     words = ginza_spacy_parser.spacy_to_word_frequencies(json_content)
     with open(args.output_file, "w") as f:
         for word, count in words:
             f.write(f"{word}, {count}\n")
+
+    return 0
