@@ -36,7 +36,7 @@ class Token(NamedTuple):
         return f"{self.norm} ({self.lemma})"
 
 
-def spacy_to_tokens(json_content: dict) -> Iterable[Token]:
+def spacy_to_tokens(json_content: list) -> Iterable[Token]:
     """
     Parse individual tokens out of spaCy-like JSON content. Ignore tokens that
     are not in :data:`DESIRED_PARTS_OF_SPEECH` or that have the ``tag``
@@ -58,7 +58,7 @@ def spacy_to_tokens(json_content: dict) -> Iterable[Token]:
                     yield Token(token["lemma"], token["norm"])
 
 
-def spacy_to_word_frequencies(json_content: dict) -> list[tuple[Token, int]]:
+def spacy_to_word_frequencies(json_content: list) -> list[tuple[Token, int]]:
     """
     Convert spaCy-like JSON content into a list of words and their frequencies
     from the JSON corpus.

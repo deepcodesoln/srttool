@@ -9,7 +9,9 @@ https://spacy.io/api/data-formats#json-input
 """
 
 import argparse
+import glob
 import json
+import os
 
 from libsrttool import ginza_spacy_parser
 
@@ -27,8 +29,10 @@ def extend_cli(sp: argparse._SubParsersAction):
         help="produce word frequency lists from spaCy-like JSON content",
     )
     parser.add_argument(
-        "json_file",
-        help="pathname of the spaCy-like JSON content to process",
+        "json_files",
+        help="pathname of the spaCy-like JSON content to process; "
+        + "if a directory, process all JSON files in the directory; "
+        + "if a single file, process just that file",
     )
     parser.add_argument(
         "output_file",
@@ -39,8 +43,16 @@ def extend_cli(sp: argparse._SubParsersAction):
 
 
 def main(args: argparse.Namespace) -> int:
-    with open(args.json_file, "r") as f:
-        json_content = json.load(f)
+    json_files = []
+    if os.path.isfile(args.json_files):
+        json_files = [args.json_files]
+    else:  # os.path.isdir
+        json_files = glob.glob(os.path.join(args.json_files, "*.json"))
+
+    json_content = []
+    for json_file in json_files:
+        with open(json_file, "r") as f:
+            json_content.extend(json.load(f))
     words = ginza_spacy_parser.spacy_to_word_frequencies(json_content)
     with open(args.output_file, "w") as f:
         for word, count in words:
