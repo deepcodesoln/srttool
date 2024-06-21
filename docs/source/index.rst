@@ -15,4 +15,5 @@ Explore ``srttool`` 's usage via ``python3 srttool.py -h``.
 
    source <https://github.com/deepcodesoln/srttool>
    srt_schema
+   tutorials/index
    api/index
